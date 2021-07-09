@@ -1,0 +1,105 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    var lastFilterText = "No previous filter";
+
+    function filter(data) {
+      $.ajax({
+        type: "POST",
+        url: "/Main/GetArticles",
+        data: data,
+        success: function (dataJSON, status) {
+          data = JSON.parse(dataJSON);
+            $("#news").html("");
+            data.forEach(function (news) {
+            $("#news").append(`<div style="border:1px solid black;">
+              <h2>${news.Title}</h2>
+              <h3>${news.Author}</h3>
+              <h4>${news.Category} ${news.Date}</h5>
+              ${news.Content}
+              <br/>
+              <a href="/Main/UpdateView?id=${news.Id}">Update</a>
+              </div>`);
+          }
+          );
+        }
+      });
+    }
+
+    function filter_category() {
+      $("#lastFilter").html(lastFilterText);
+
+      cat = $("#category").val();
+      lastFilterText = "Previously filtered by category: " + cat;
+      filter({filter: 'category', category: cat});
+    }
+
+    function filter_date() {
+      $("#lastFilter").html(lastFilterText);
+
+      startDate = $("#dateS").val();
+      endDate = $("#dateF").val();
+      lastFilterText = "Previously filtered by date: " + startDate + " - " + endDate;
+      filter({filter: 'date', startDate: startDate, endDate: endDate});
+
+
+    }
+
+    $(document).ready(function () {
+      var news_list = {}
+      $.ajax({
+        type: "GET",
+        url: "/Main/GetCategories",
+        success: function(dataJSON, status) {
+          data = JSON.parse(dataJSON);
+          data.forEach(function(cat)
+          {
+            $("#category").append(`<option value="${cat}">${cat}</option>`);
+          })
+        }
+      })
+
+      $("#refresh").click(filter_category);
+      $("#date_filter_button").click(filter_date);
+    });
+    </script>
+</head>
+
+<body>
+    <a href="/Main/LoginPage">Log in</a>
+    <br />
+    Add news
+    <form action="/Main/AddArticle" method="post">
+        <label for="title">Title:</label><br>
+        <input type="text" name="title"><br>
+        <label for="category">Category:</label><br>
+        <input type="text" name="category"><br>
+        <label for="content">Content:</label><br>
+        <input type="text" name="content"><br>
+        <label for="date">Date:</label><br>
+        <input type="date" name="date"><br>
+        <input type="submit" value="Submit">
+    </form>
+    <br />
+    <br />
+    <select id="category">
+    </select>
+    <button type="button" id="refresh">Filter by category</button>
+    <br />
+    <input id="dateS" type="date">
+    <input id="dateF" type="date">
+    <button type="button" id="date_filter_button">Filter by date</button>
+    <br />
+    <div id="lastFilter">No previous filter</div>
+    <br />
+    <h1>News</h1>
+    <div id="news">
+    </div>
+</body>
+</html>

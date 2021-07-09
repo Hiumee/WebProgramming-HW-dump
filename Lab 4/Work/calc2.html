@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <script src="../../../jquery.js"></script>
+        <script type="text/javascript">
+
+            $( document ).ready(function() {
+                $('input')
+                    .filter((index, input) => input.type === 'button')
+                    .each((index, button) => {
+                        $(button).on('click', event =>
+                            calculate(button.value)
+                            );
+                    });
+                });
+
+            var calculator = {};
+
+            function validate(n) {
+                  return !isNaN(n);
+            }
+
+            function calculate(operation) {
+                if (initCalculator()) {
+                    var result = $('#resultSpan');
+                    switch (operation) {
+                        case "+": {
+                            result.html(calculator.a + calculator.b);
+                            break;
+                        };
+                        case "*": {
+                            result.html(calculator.a * calculator.b); 
+                            break;
+                        };
+                        case "-": {
+                            result.html(calculator.a - calculator.b); 
+                            break;
+                        };
+                        case "/": {
+                            result.html(calculator.a / calculator.b); 
+                            break;
+                        };
+                        default: {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            function initCalculator() {
+                var inputOne = $("#inputOne")[0];
+                var inputTwo = $("#inputTwo")[0];
+
+                var inputOneValue = inputOne.value;
+                var inputTwoValue = inputTwo.value;
+
+                if (!validate(inputOneValue) || !validate(inputTwoValue)) {
+                    console.log("ERROR");
+                    alert("Please enter valid numbers!");   
+                    return false;
+                }
+
+                calculator.a = parseInt(inputOneValue);
+                calculator.b = parseInt(inputTwoValue);
+                return true;
+            }
+
+        </script>
+    </head>
+
+    <body>
+            <input type="text" id="inputOne">
+            <input type="button" value="+">
+            <input type="button" value="-">
+            <input type="button" value="*">
+            <input type="button" value="/">
+            <input type="text" id="inputTwo">
+            =
+            <span id="resultSpan">
+            </span>
+    </body>
+</html>

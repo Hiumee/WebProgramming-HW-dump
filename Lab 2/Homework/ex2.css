@@ -1,0 +1,23 @@
+.preview {
+    float: left;
+    position: relative;
+}
+
+.bigimage {
+    position: absolute;
+    display: none;
+    height: 300px;
+    top: 0;
+}
+
+.thumbnail {
+    height: 50px;
+}
+
+.thumbnail:hover + .bigimage {
+    display: block;
+}
+
+.dummy {
+    height: 300px;
+}
